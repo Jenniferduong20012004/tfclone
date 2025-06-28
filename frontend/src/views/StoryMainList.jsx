@@ -1,7 +1,46 @@
 // src/views/StoryMainList.jsx
-import React from 'react';
-
+import React, { useState, useEffect, useRef } from "react";
+import { toast, ToastContainer } from "react-toastify";
 function StoryMainList() {
+  const [storiesData, setStoriesData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    fetchBook();
+  }, []);
+  const fetchBook = async () => {
+    try {
+      
+
+      const response = await fetch("http://localhost:5000/getAllBook", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const stories = data.stories.map((story) => ({
+          ...story,
+          id: story.id,
+          title: story.name,
+        }));
+        setStoriesData(stories);
+        
+      } else {
+        toast.error(data.message || "Failed to fetch user", {
+          position: "top-right",
+        });
+      }
+    } catch (error) {
+      toast.error("Error: " + (error.message || "Unknown error"), {
+        position: "top-right",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   const storyData = {
     popular: [
       { title: "The Rise Of Sun", author: "Hana Kim", genre: "Fantasy" },
@@ -36,27 +75,9 @@ function StoryMainList() {
       <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '30px' }}>Welcome Back</h2>
       
       <div style={{ marginBottom: '30px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' }}>Popular Stories</h3>
+        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' }}>Top Stories</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-          {storyData.popular.map((story, index) => (
-            <div key={index} style={cardStyle(index)}>
-              <span style={{ fontSize: '10px', backgroundColor: 'rgba(0,0,0,0.3)', padding: '4px 8px', borderRadius: '20px', alignSelf: 'flex-start' }}>
-                {story.views} views
-              </span>
-              <div>
-                <h4 style={{ fontSize: '14px', fontWeight: 'bold', margin: '4px 0' }}>{story.title}</h4>
-                <p style={{ fontSize: '12px', opacity: '0.8', margin: '2px 0' }}>{story.author}</p>
-                <p style={{ fontSize: '12px', opacity: '0.7', margin: '0' }}>{story.genre}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' }}>Fiction</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-          {storyData.fiction.map((story, index) => (
+          {storiesData?.map((story, index) => (
             <div key={index} style={cardStyle(index)}>
               <span style={{ fontSize: '10px', backgroundColor: 'rgba(0,0,0,0.3)', padding: '4px 8px', borderRadius: '20px', alignSelf: 'flex-start' }}>
                 {story.views} views
