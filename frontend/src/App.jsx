@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import StoryMainList from "./views/StoryMainList";
 import ChapterList from "./views/ChapterList"
+import StoryDetail from "./views/StoryDetail"
 import React from 'react'; 
 
 function App() {
@@ -14,6 +15,21 @@ function App() {
         element={
             <ChapterList />
         }
+        
+      />
+      <Route
+        path="/story/:id/:nameStory"
+        element={
+            <ChapterList />
+        }
+        
+      />
+      <Route
+        path="/story/:id/:nameStory/chapter/:chapterId"
+        element={
+            <StoryDetail/>
+        }
+        
       />
       </Routes>
     </div>

@@ -1,14 +1,16 @@
 import React from 'react';
-
+import { useNavigate, useParams } from "react-router-dom";
 function StoryDetail() {
-  const storyContent = `Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit. Nunc Ut Ligula Vel Ipsum Ullamcorper Malesuada. Nullam Non Purus Eget Mi Tincidunt Tincidunt. Vivamus Eu Aliquet Ex, Vel Varius Tellus. Quisque Interdum Bibendum Arcu, Non Consequat Nisl Porta Eu. Sed Elementum Varius Risus, A Luctus Justo Congue In. Praesent Congue Justo Nullam Non Purus Eget Mi Tincidunt Tincidunt. Vivamus Eu Aliquet Ex, Vel Varius Tellus. Quisque Interdum Bibendum Arcu, Non Consequat Nisl Porta Eu. Sed Elementum Varius Risus, A Luctus Justo Congue In. Praesent Congue JustoNullam Non Purus Eget Mi Tincidunt Tincidunt. Vivamus Eu Aliquet Ex, Vel Varius Tellus. Quisque Interdum Bibendum Arcu, Non Consequat Nisl Porta Eu. Sed Elementum Varius Risus, A Luctus Justo Congue In. Praesent Congue Justoget Mi Tincidunt Tincidunt. Vivamus Eu Aliquet Ex, Vel Varius Tellus. Quisque Interdum Bibendum Arcu, Non Consequat Nisl Porta Eu. Sed Elementum Varius Risus, A Luctus Justo Congue In. Praesent Congue Justo`;
+  const { id, nameStory, chapterId} = useParams();
+  const chapterData = JSON.parse(localStorage.getItem("chapter"));
 
-  const paragraphs = storyContent.split('. ').map((sentence, index) => {
-    if (sentence.trim()) {
-      return sentence.trim() + (index < storyContent.split('. ').length - 1 ? '.' : '');
-    }
-    return '';
-  }).filter(p => p);
+const storyContent = chapterData?.content || "";  // safely get content or fallback to empty string
+
+const paragraphs = storyContent
+  .split(/\r?\n\r?\n/) // Regex handles both \r\n\r\n and \n\n
+  .map(p => p.trim())
+  .filter(p => p.length > 0);
+
 
   return (
     <div style={{
@@ -35,7 +37,7 @@ function StoryDetail() {
         fontWeight: '600',
         zIndex: '10'
       }}>
-        <span>9:41</span>
+        <span>Qunu</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <div style={{ width: '4px', height: '4px', backgroundColor: 'white', borderRadius: '50%' }}></div>
           <div style={{ width: '4px', height: '4px', backgroundColor: 'white', borderRadius: '50%' }}></div>
@@ -99,7 +101,7 @@ function StoryDetail() {
           fontWeight: 'bold',
           margin: '0 0 8px 0',
           textAlign: 'center'
-        }}>The Rise Of Sun</h1>
+        }}>{nameStory}</h1>
         <p style={{
           fontSize: '16px',
           opacity: '0.8',

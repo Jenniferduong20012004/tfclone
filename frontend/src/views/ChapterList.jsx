@@ -60,7 +60,13 @@ function ChapterList() {
     status: "Ongoing"
   };
 
-  const handleChapterClick = (chapterId) => {
+  const handleChapterClick = (chapterId, content) => {
+    localStorage.setItem(
+      "chapter",
+          JSON.stringify({
+            content: content
+          })
+        )
     navigate(`/story/${id}/${nameStory}/chapter/${chapterId}`);
   };
 
@@ -205,7 +211,7 @@ function ChapterList() {
           {(chaptersData || []).map((chapter, index) => (
             <div
               key={chapter.id}
-              onClick={() => handleChapterClick(chapter.id)}
+              onClick={() => handleChapterClick(chapter.id, chapter.content)}
               style={{
                 padding: '16px 20px',
                 borderBottom: index < chaptersData?.length - 1 ? '1px solid #f3f4f6' : 'none',
@@ -283,7 +289,7 @@ function ChapterList() {
       {/* Continue Reading Button */}
       <div style={{ padding: '0 16px 32px 16px' }}>
         <button
-          onClick={() => handleChapterClick(4)} // Next unread chapter
+          onClick={() => handleChapterClick(4, "s")} // Next unread chapter
           style={{
             width: '100%',
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
