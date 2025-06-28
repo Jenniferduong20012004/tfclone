@@ -1,10 +1,51 @@
-import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
+import React, { useEffect, useState } from 'react';
+import { toast, ToastContainer } from "react-toastify";
 function ChapterList() {
-  const { storyId } = useParams();
+  const { id, nameStory} = useParams();
+  const [chaptersData, setChaptersData] = useState(null);
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+      fetchBookChapter();
+    }, []);
+    const fetchBookChapter = async () => {
+      try {
+        
+        const response = await fetch("http://localhost:5000/getBookChapter", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+          storyId: id,
+        }),
+        });
+  
+        const data = await response.json();
+  
+        if (data.success) {
+          const chapters = data.chapter.map((chapter) => ({
+            ...chapter,
+            id: chapter.id,
+            content: chapter.content,
+          }));
+          setChaptersData(chapters);
+          
+        } else {
+          toast.error(data.message || "Failed to fetch user", {
+            position: "top-right",
+          });
+        }
+      } catch (error) {
+        toast.error("Error: " + (error.message || "Unknown error"), {
+          position: "top-right",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+  
   // Mock data - in real app, this would come from your API based on storyId
   const storyData = {
     title: "The Rise Of Sun",
@@ -110,7 +151,7 @@ function ChapterList() {
             fontSize: '24px',
             fontWeight: 'bold',
             margin: '0 0 8px 0'
-          }}>{storyData.title}</h1>
+          }}>{nameStory}</h1>
           <p style={{
             fontSize: '14px',
             opacity: '0.9',
@@ -169,7 +210,7 @@ function ChapterList() {
             fontWeight: 'bold',
             margin: '0',
             color: '#1f2937'
-          }}>Chapters ({chapters.length})</h3>
+          }}>Chapters ({chaptersData?.length})</h3>
         </div>
 
         {/* Chapter List */}
