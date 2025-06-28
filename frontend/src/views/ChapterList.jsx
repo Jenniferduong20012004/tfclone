@@ -28,8 +28,10 @@ function ChapterList() {
           const chapters = data.chapter.map((chapter) => ({
             ...chapter,
             id: chapter.id,
+            title: `Chapter ${chapter.id}`,
             content: chapter.content,
           }));
+          chapters.sort((a, b) => a.id - b.id);
           setChaptersData(chapters);
           
         } else {
@@ -58,23 +60,8 @@ function ChapterList() {
     status: "Ongoing"
   };
 
-  const chapters = [
-    { id: 1, title: "The Last Dawn", readTime: "12 min", isRead: true, isNew: false },
-    { id: 2, title: "Whispers in the Dark", readTime: "15 min", isRead: true, isNew: false },
-    { id: 3, title: "The Chosen Path", readTime: "18 min", isRead: true, isNew: false },
-    { id: 4, title: "Shadows of the Past", readTime: "14 min", isRead: false, isNew: false },
-    { id: 5, title: "The Ancient Prophecy", readTime: "16 min", isRead: false, isNew: false },
-    { id: 6, title: "Fire and Ice", readTime: "20 min", isRead: false, isNew: false },
-    { id: 7, title: "The Dragon's Call", readTime: "13 min", isRead: false, isNew: false },
-    { id: 8, title: "Echoes of Magic", readTime: "17 min", isRead: false, isNew: false },
-    { id: 9, title: "The Forbidden Forest", readTime: "19 min", isRead: false, isNew: false },
-    { id: 10, title: "Secrets Unveiled", readTime: "15 min", isRead: false, isNew: true },
-    { id: 11, title: "The Battle Begins", readTime: "22 min", isRead: false, isNew: true },
-    { id: 12, title: "Rising Storm", readTime: "16 min", isRead: false, isNew: true }
-  ];
-
   const handleChapterClick = (chapterId) => {
-    navigate(`/story/${storyId}/chapter/${chapterId}`);
+    navigate(`/story/${id}/${nameStory}/chapter/${chapterId}`);
   };
 
   const handleBackClick = () => {
@@ -215,13 +202,13 @@ function ChapterList() {
 
         {/* Chapter List */}
         <div>
-          {chapters.map((chapter, index) => (
+          {(chaptersData || []).map((chapter, index) => (
             <div
               key={chapter.id}
               onClick={() => handleChapterClick(chapter.id)}
               style={{
                 padding: '16px 20px',
-                borderBottom: index < chapters.length - 1 ? '1px solid #f3f4f6' : 'none',
+                borderBottom: index < chaptersData?.length - 1 ? '1px solid #f3f4f6' : 'none',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -229,8 +216,8 @@ function ChapterList() {
                 backgroundColor: chapter.isRead ? '#f8fafc' : 'white',
                 transition: 'background-color 0.2s ease'
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = '#f1f5f9'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = chapter.isRead ? '#f8fafc' : 'white'}
+              // onMouseEnter={(e) => e.target.style.backgroundColor = '#f1f5f9'}
+              // onMouseLeave={(e) => e.target.style.backgroundColor = chapter.isRead ? '#f8fafc' : 'white'}
             >
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
@@ -242,7 +229,7 @@ function ChapterList() {
                   }}>
                     Chapter {chapter.id}
                   </span>
-                  {chapter.isNew && (
+                  {/* {chapter.isNew && (
                     <span style={{
                       fontSize: '10px',
                       backgroundColor: '#ef4444',
@@ -253,7 +240,7 @@ function ChapterList() {
                     }}>
                       NEW
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <h4 style={{
                   fontSize: '15px',
@@ -261,11 +248,11 @@ function ChapterList() {
                   margin: '0 0 4px 0',
                   color: chapter.isRead ? '#6b7280' : '#1f2937'
                 }}>{chapter.title}</h4>
-                <p style={{
+                {/* <p style={{
                   fontSize: '12px',
                   color: '#9ca3af',
                   margin: '0'
-                }}>{chapter.readTime} read</p>
+                }}>{chapter.readTime} read</p> */}
               </div>
               
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
