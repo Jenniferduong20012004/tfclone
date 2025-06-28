@@ -1,16 +1,39 @@
 // src/views/StoryMainList.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
+import ChapterList from './ChapterList';
 function StoryMainList() {
+  const navigate = useNavigate(); 
+  const [currentView, setCurrentView] = useState('list'); // 'list' or 'chapters'
+  const [selectedStory, setSelectedStory] = useState(null);
   const [storiesData, setStoriesData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const handleStoryClick = (story) => {
+    setSelectedStory(story);
+    setCurrentView('chapters');
+    navigate(`/story/${story.id}/${story.title}`);
+  };
+
+  const handleBackToList = () => {
+    setCurrentView('list');
+    setSelectedStory(null);
+    navigate(`/`);
+  };
+  const handleChapterClick = (chapterId) => {
+    // Navigate to chapter reading page
+    console.log(`Reading chapter ${chapterId} of story ${selectedStory.id}`);
+    // You can add navigation logic here
+  };
+
+  // If viewing chapters, show ChapterList component
+
   useEffect(() => {
     fetchBook();
   }, []);
   const fetchBook = async () => {
     try {
       
-
       const response = await fetch("http://localhost:5000/getAllBook", {
         method: "POST",
         headers: {
@@ -41,18 +64,6 @@ function StoryMainList() {
       setLoading(false);
     }
   };
-  const storyData = {
-    popular: [
-      { title: "The Rise Of Sun", author: "Hana Kim", genre: "Fantasy" },
-      { title: "The Rise Of Sun", author: "Hana Kim", genre: "Fantasy" },
-      { title: "The Rise Of Sun", author: "Hana Kim", genre: "Fantasy" }
-    ],
-    fiction: [
-      { title: "Black Panther", author: "Marvel Comics", views: "5k", genre: "Superhero" },
-      { title: "Aqua man", author: "DC Comics", views: "8k", genre: "Adventure" },
-      { title: "Avatar", author: "James Cameron", views: "15k", genre: "Sci-Fi" }
-    ]
-  };
 
   const cardStyle = (index) => ({
     background: [
@@ -68,17 +79,34 @@ function StoryMainList() {
     flexDirection: 'column',
     justifyContent: 'space-between'
   });
-
+  if (currentView === 'chapters') {
+    return (
+      <ChapterList 
+        storyId={selectedStory?.id}
+        onBack={handleBackToList}
+        onChapterClick={handleChapterClick}
+      />
+    );
+  }
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', padding: '20px' }}>
       <h1 style={{ color: '#8b5cf6', fontSize: '16px' }}>Qunu,</h1>
       <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '30px' }}>Welcome Back</h2>
       
+       {/* 👇 Only show this when in 'list' view */}
+    {currentView === 'list' && (
       <div style={{ marginBottom: '30px' }}>
         <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' }}>Top Stories</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
           {storiesData?.map((story, index) => (
-            <div key={index} style={cardStyle(index)}>
+            <div
+              key={index}
+              style={{
+                ...cardStyle(index),
+                cursor: 'pointer'
+              }}
+              onClick={() => handleStoryClick(story)}
+            >
               <span style={{ fontSize: '10px', backgroundColor: 'rgba(0,0,0,0.3)', padding: '4px 8px', borderRadius: '20px', alignSelf: 'flex-start' }}>
                 {story.views} views
               </span>
@@ -91,8 +119,18 @@ function StoryMainList() {
           ))}
         </div>
       </div>
-    </div>
-  );
+    )}
+
+    {/* 👇 Only show this when in 'chapters' view */}
+    {currentView === 'chapters' && (
+      <ChapterList
+        storyId={selectedStory?.id}
+        onBack={handleBackToList}
+        onChapterClick={handleChapterClick}
+      />
+    )}
+  </div>
+);
 }
 
 export default StoryMainList;

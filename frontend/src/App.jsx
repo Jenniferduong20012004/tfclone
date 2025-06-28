@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import StoryMainList from "./views/StoryMainList";
+import ChapterList from "./views/ChapterList"
 import React from 'react'; 
 
 function App() {
@@ -8,6 +9,12 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<StoryMainList />} />
+        <Route
+        path="/story/:id/:nameStory"
+        element={
+            <ChapterList />
+        }
+      />
       </Routes>
     </div>
   );
